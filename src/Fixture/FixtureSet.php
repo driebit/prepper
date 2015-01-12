@@ -42,11 +42,11 @@ class FixtureSet implements \IteratorAggregate
                     $mtimes[] = filemtime($reflClass->getFileName());
                 }
             }
+            
+            // Look at the fixture that was modified last
+            sort($mtimes);
+            $this->lastModified = new \DateTime('@' . $mtimes[0]);
         }
-
-        // Look at the fixtures that was last modified
-        sort($mtimes);
-        $this->lastModified = new \DateTime('@' . $mtimes[0]);
         
         return $this->lastModified;
     }
