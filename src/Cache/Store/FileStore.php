@@ -9,6 +9,10 @@ class FileStore implements StoreInterface
     public function __construct($path)
     {
         $this->path = $path;
+        
+        if (!file_exists($path)) {
+            mkdir($path, 0775, true);
+        }
     }
 
     public function has($key)
