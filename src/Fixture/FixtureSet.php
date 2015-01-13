@@ -29,7 +29,7 @@ class FixtureSet implements \IteratorAggregate
     
     public function getLastModified()
     {
-        if (null === $this->lastModified) {
+        if (null === $this->lastModified && count($this->classes) > 0) {
             $mtimes = array();
 
             foreach ($this->classes as $class) {
