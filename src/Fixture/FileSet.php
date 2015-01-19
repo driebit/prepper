@@ -2,7 +2,7 @@
 
 namespace Driebit\Prepper\Fixture;
 
-class FixtureSet implements \IteratorAggregate
+class FileSet implements FixtureSetInterface
 {
     private $files;
     private $lastModified;
@@ -25,7 +25,7 @@ class FixtureSet implements \IteratorAggregate
             $this->hash = md5(json_encode($files));
         }
 
-        return $hash;
+        return $this->hash;
     }
 
     public function getLastModified()
@@ -33,15 +33,8 @@ class FixtureSet implements \IteratorAggregate
         if (null === $this->lastModified) {
             $mtimes = array();
 
-            foreach ($this->classes as $class) {
-
-                if ($class instanceof DatedFixtureInterface) {
-                    // @todo
-                } else {
-                    // Determine last modified on file mtime
-                    $reflClass = new \ReflectionClass($class);
-                    $mtimes[] = filemtime($reflClass->getFileName());
-                }
+            foreach ($this->files as $file) {
+                $mtimes[] = filemtime($file);
             }
 
             // Look at the fixture that was modified last
@@ -54,6 +47,6 @@ class FixtureSet implements \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->classes);
+        return new \ArrayIterator($this->files);
     }
 }

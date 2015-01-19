@@ -2,17 +2,25 @@
 
 namespace Driebit\Prepper\Fixture;
 
-class FixtureSet implements \IteratorAggregate
+abstract class AbstractFixtureSet implements FixtureSetInterface
 {
-    private $files;
-    private $lastModified;
-    private $hash;
+    protected $files = array();
+    protected $hash;
+    protected $lastModified;
 
+    /**
+     * Constructor
+     *
+     * @param string[] $files
+     */
     public function __construct(array $files)
     {
         $this->files = $files;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHash()
     {
         if (null === $this->hash) {
@@ -22,29 +30,22 @@ class FixtureSet implements \IteratorAggregate
             sort($files);
 
             // json_encode is faster than serialize: http://stackoverflow.com/a/7723730
-            $this->hash = md5(json_encode($files));
+            $this->hash = md5(json_encode($fixtures));
         }
 
-        return $hash;
+        return $this->hash;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLastModified()
     {
-        if (null === $this->lastModified) {
+        if (null === $this->lastModified && count($this->files) > 0) {
             $mtimes = array();
-
-            foreach ($this->classes as $class) {
-
-                if ($class instanceof DatedFixtureInterface) {
-                    // @todo
-                } else {
-                    // Determine last modified on file mtime
-                    $reflClass = new \ReflectionClass($class);
-                    $mtimes[] = filemtime($reflClass->getFileName());
-                }
+            foreach ($this->files as $file) {
+                $mtimes[] = filemtime($file);
             }
-
-            // Look at the fixture that was modified last
             sort($mtimes);
             $this->lastModified = new \DateTime('@' . $mtimes[0]);
         }
@@ -52,8 +53,11 @@ class FixtureSet implements \IteratorAggregate
         return $this->lastModified;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIterator()
     {
-        return new \ArrayIterator($this->classes);
+        return new \ArrayIterator($this->files);
     }
 }

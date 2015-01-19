@@ -1,25 +1,25 @@
 <?php
 
-namespace Driebit\Prepper\FixtureLoader;
+namespace Driebit\Prepper\Loader;
 
 use Driebit\Prepper\Cache\CacheInterface;
 use Driebit\Prepper\Exception\BackupNotFoundException;
 use Driebit\Prepper\Exception\BackupOutOfDateException;
-use Driebit\Prepper\Fixture\FixtureSet;
+use Driebit\Prepper\Fixture\FixtureSetInterface;
 
-class CacheableFixtureLoader extends AbstractFixtureLoaderDecorator
+class CacheableLoader extends AbstractLoaderDecorator
 {
     private $cache;
-    
+
     public function __construct(
-        FixtureLoaderInterface $loader,
+        LoaderInterface $loader,
         CacheInterface $cache
     ) {
         $this->cache = $cache;
         parent::__construct($loader);
     }
-    
-    public function load(FixtureSet $fixtures)
+
+    public function load(FixtureSetInterface $fixtures)
     {
         // check cache
         try {
@@ -31,11 +31,11 @@ class CacheableFixtureLoader extends AbstractFixtureLoaderDecorator
         } catch (\Exception $e) {
             throw $e;
         }
-              
+
         $references = $this->loader->load($fixtures);
-        
+
         $this->cache->store($fixtures);
-        
+
         return $references;
     }
 }
