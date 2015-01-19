@@ -4,13 +4,13 @@ namespace Driebit\Prepper\Cache;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Driebit\Prepper\Cache\Store\StoreInterface;
-use Driebit\Prepper\Fixture\FixtureSet;
+use Driebit\Prepper\Fixture\FixtureSetInterface;
 
 abstract class AbstractDoctrineCache implements CacheInterface
 {
     protected $objectManager;
     protected $store;
-    
+
     public function __construct(
         ObjectManager $objectManager,
         StoreInterface $store
@@ -18,12 +18,12 @@ abstract class AbstractDoctrineCache implements CacheInterface
         $this->objectManager = $objectManager;
         $this->store = $store;
     }
-    
-    protected function getCacheKey(FixtureSet $fixtures)
+
+    protected function getCacheKey(FixtureSetInterface $fixtures)
     {
         return md5($fixtures->getHash() . serialize($this->getMetadata()));
     }
-    
+
     protected function getMetadata()
     {
         return $this->objectManager->getMetadataFactory()->getAllMetadata();

@@ -11,7 +11,7 @@ class ReferenceCache implements CacheInterface
 {
     private $referenceRepository;
     private $store;
-    
+
     public function __construct(
         ProxyReferenceRepository $referenceRepository,
         StoreInterface $store
@@ -19,7 +19,7 @@ class ReferenceCache implements CacheInterface
         $this->referenceRepository = $referenceRepository;
         $this->store = $store;
     }
-    
+
     public function store(FixtureSet $fixtures)
     {
         $path = $this->store->getPath($this->getCacheKey($fixtures));
@@ -27,19 +27,19 @@ class ReferenceCache implements CacheInterface
     }
 
     public function restore(FixtureSet $fixtures)
-    {
+    {die('restore');
         $key = $this->getCacheKey($fixtures);
-        
+
         if (!$this->store->has($key)) {
             throw new BackupNotFoundException($key);
         }
-        
+
         $backup = $this->store->get($key);
         $this->referenceRepository->unserialize(
             file_get_contents($backup->getFilename())
         );
     }
-    
+
     private function getCacheKey(FixtureSet $fixtures)
     {
         return $fixtures->getHash() . '-references.ser';

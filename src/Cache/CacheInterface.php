@@ -3,16 +3,16 @@
 namespace Driebit\Prepper\Cache;
 
 use Doctrine\Common\DataFixtures\ProxyReferenceRepository;
-use Driebit\Prepper\Fixture\FixtureSet;
+use Driebit\Prepper\Fixture\FixtureSetInterface;
 
 interface CacheInterface
 {
-    public function store(FixtureSet $fixtures);
+    public function store(FixtureSetInterface $fixtures);
 
     /**
-     * @param FixtureSet $fixtures
+     * @param FixtureSetInterface $fixtures
      *
      * @return ProxyReferenceRepository
      */
-    public function restore(FixtureSet $fixtures);
+    public function restore(FixtureSetInterface $fixtures);
 }
